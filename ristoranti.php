@@ -2,6 +2,7 @@
 <html lang="en">
 <?php
     session_start();
+    include "common/setup.php";
     include "common/head.php";
     include "common/funzioni.php"
     ?>  
@@ -39,25 +40,22 @@
       </div>
     </div>
         <?php 
-    echo "<div>";
-        $risultato = leggiRistoranti($cid);
-        //print_r($ristoranti);
-        $ristoranti = $risultato["contenuto"];
-        //print_r($ristoranti);
-        stampaRistoranti($ristoranti);
-    echo "</div>";
-?>      
-              
-        
-  
+          echo "<div>";
+          $risultato = leggiRistoranti($cid);
+          //print_r($ristoranti);
+          $ristoranti = $risultato["contenuto"];
+          //print_r($ristoranti);
+          stampaRistoranti($ristoranti);
+          echo "</div>";
+        ?>        
     <?php
-    include "common/footer.php"
+      include "common/footer.php"
     ?>  
   </body>
 </html>
 <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/tiny-slider.js"></script>
-    <script src="js/aos.js"></script>
-    <script src="js/navbar.js"></script>
-    <script src="js/counter.js"></script>
-    <script src="js/custom.js"></script>
+<script src="js/tiny-slider.js"></script>
+<script src="js/aos.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/counter.js"></script>
+<script src="js/custom.js"></script>
