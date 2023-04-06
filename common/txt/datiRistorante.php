@@ -3,13 +3,12 @@
 session_start();
 include "../setup.php";
 include "../funzioni.php";
-$risultato = leggiDati($cid);
-//print_r("ris");
-//print_r($risultato);
+$risultato = leggiRistorante($cid);
+print_r("ris");
+print_r($risultato);
 $dati = $risultato["contenuto"];
-$via = $dati[7];
-$via = str_ireplace(' ', '', $via);
-//echo $via;
+//$via = $dati[7];
+//$via = str_ireplace(' ', '', $via);
 ?>
 <div class="col-lg-12" data-aos="fade-up" data-aos-delay="200">
   <form method="POST" action="backend/modificadati-exe.php">
@@ -47,11 +46,11 @@ $via = str_ireplace(' ', '', $via);
                   </div>
                   <div class="col-6 mb-3">
                     <input
-                    name="cognome"
+                    name="piva"
                       type="text"
                       class="form-control"
                       value=<?php echo $dati[3];?>
-                      placeholder="Cognome"
+                      placeholder="Partita Iva"
                     />
                   </div>
                 </div>
@@ -60,20 +59,20 @@ $via = str_ireplace(' ', '', $via);
                 <div class="row">
                   <div class="col-6">
                     <input
-                      name="carta_di_credito"
+                      name="rsociale"
                       type="text"
                       class="form-control"
                       value=<?php echo $dati[4];?>
-                      placeholder="Carta di Credito"
+                      placeholder="Ragione Sociale"
                     />
                   </div>
                   <div class="col-6 mb-3">
                     <input
-                      name="indicazioni_consegna"
+                      name="citta"
                       type="text"
                       class="form-control"
                       value=<?php echo $dati[5];?>
-                      placeholder="Indicazioni Consegna"
+                      placeholder="Città"
                     />
                   </div>
                 </div>
@@ -82,21 +81,12 @@ $via = str_ireplace(' ', '', $via);
                 <div class="row">
                   <div class="col-6 mb-3">
                     <input
-                      name="citta"
-                      type="text"
-                      class="form-control"
-                      value=<?php echo $dati[6];?>
-                      placeholder="Città"
-                      disabled
-                    />
-                  </div>
-                  <div class="col-6 mb-3">
-                    <input
                       name="via"
                       type="text"
                       class="form-control"
+                      value=<?php echo $dati[6];?>
                       placeholder="Via"
-                      disabled <?php echo "value=". $via;?>
+                      disabled
                     />
                   </div>
                 </div>

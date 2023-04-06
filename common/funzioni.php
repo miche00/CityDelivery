@@ -43,7 +43,7 @@ function isUser($cid,$login,$pwd, $tipo)
     return $risultato;
 }
 
-
+/*Legge tutti i ristoranti nel db*/
 function leggiRistoranti($cid)
 {
  $ristoranti = array();
@@ -74,6 +74,40 @@ function leggiRistoranti($cid)
  return $risultato;
 }
 
+/*legge un ristorante specifico*/
+function leggiRistorante($cid)
+{
+	$dati = array();
+	$risultato = array("status"=>"ok","msg"=>"", "contenuto"=>"");
+	
+	/*controllo la connessione*/
+	if ($cid->connect_errno) {
+	 $risultato["status"]="ko";
+	 $risultato["msg"]="errore nella connessione al db " . $cid->connect_error;
+	 return $risultato;
+	}
+	/*creo la mia interrogazione*/
+	$campo1 = $_SESSION["utente"];
+	$sql= "SELECT * FROM ristorante WHERE email='$campo1';";
+	$res=$cid->query($sql);
+	if ($res==null)
+	{
+	 $risultato["status"]="ko";
+	 $risultato["msg"]="errore nella esecuzione della interrogazione " . $cid->error;
+	 return $risultato;
+	}
+	$row=$res->fetch_row();
+	//print_r($row);
+	for ($i=0; $i<sizeof($row); $i++) {
+	    $dati[$i]=$row[$i];
+	}
+	//print_r($dati);
+	$risultato["status"]="ok";
+	$risultato["msg"]="Query Effettuata con Successo";
+	$risultato["contenuto"]=$dati;
+	//print_r($risultato);
+	return $risultato;
+    }
 
 
 function stampaRistoranti($ristoranti) {
@@ -87,7 +121,7 @@ function stampaRistoranti($ristoranti) {
 			$img = $ar_risto[7];
 			//echo "<h1>". $nome. "</h1>";echo "<h1>". $citta. "</h1>";echo "<h1>". $via. "</h1>";
 			echo "<div class=\"col-sm-6\">
-			<div class=\"card mb-3\" data-aos=\"fade-up\">
+			<div class=\"cadrd mb-3\">
 			<img src=\"images/". $img ."\" class=\"card-img-top\">
 			  <div class=\"card-body\">
 				<h5 class=\"card-title\">". $nome ."</h5>
@@ -170,7 +204,7 @@ function stampaPiatto($piatti) {
 }
  
 
-
+/*Legge tutti i clienti nel db*/
 function leggiClienti($cid)
 {
  $clienti = array();
@@ -358,6 +392,7 @@ function insertFattorino($cid, $login, $pwd, $nome, $cognome, $cf, $accredito, $
 	return $risultato;
 }
 
+/*legge i dati dell'utente*/
 function leggiDati($cid)
 {
  $dati = array();
@@ -392,7 +427,10 @@ function leggiDati($cid)
  return $risultato;
 }
 
+/*Stampo i dati dei diversi utenti*/
 function stampaDati($dati, $tipo) {
+	switch ($tipo) {
+		case "Cliente":
 			$email = $dati[0];
 			$password = $dati[1];
 			$nome = $dati[2];
@@ -404,7 +442,7 @@ function stampaDati($dati, $tipo) {
 			//echo $via;
 			//echo $tipo;
 			//echo "<h1 class=\"bg-light\">". $email. $password. $nome. "</h1>";
-			echo "<div class=\"section mx-auto border\" style=\"max-width: 540px;\" data-aos=\"fade-up\"";
+			echo "<div class=\"section mx-auto border\" style=\"max-width: 540px;\"";
 			echo "<div class=\"card\">
 					<img src=\"images/profile.png\" class=\"card-img-top\">
 					<div id =\"profilo\" class=\"card-body\">
@@ -421,18 +459,105 @@ function stampaDati($dati, $tipo) {
 					</div>
 				</div>";
 			echo "</div>";
+			break; 
+		case "Fattorino":
+			$email = $dati[0];
+			$password = $dati[1];
+			$nome = $dati[2];
+			$cognome = $dati[3];
+			$cf = $dati[4];
+			$accredito = $dati[5];
+			$zona_citta = $dati[6];
+			$data_nascita = $dati[7];
+			//echo $via;
+			//echo $tipo;
+			//echo "<h1 class=\"bg-light\">". $email. $password. $nome. "</h1>";
+			echo "<div class=\"section mx-auto border\" style=\"max-width: 540px;\"";
+			echo "<div class=\"card\">
+					<img src=\"images/profile.png\" class=\"card-img-top\">
+					<div id =\"profilo\" class=\"card-body\">
+						<h5 class=\"card-title text-center\">". $nome. " ". $cognome. "</h5>
+						<p class=\"card-text text-center\">Data di Nascita: ". $data_nascita. " </p>
+						<p class=\"card-text text-center\">CF: ". $cf. "</p>
+						<p class=\"card-text text-center\"><small class=\"text-muted\">Password: ". $password . " </small></p>
+						<p class=\"card-text text-center\"><small class=\"text-muted\">Zona: ". $zona_citta. " </small></p>
+						<p class=\"card-text text-center\"><small class=\"text-muted\">Accredito: ". $accredito. " </small></p>
+						<p class=\"card-text text-center\"><small id=\"tipo\" class=\"text-muted\">$tipo</small></p>
+						<div class=\"row\">
+						<input type=\"submit\" value=\"Modifica\" class=\"btn btn-primary col-12 mb-3\" onclick=loadModificaDati()>
+						<input type=\"submit\" value=\"Cancella\" class=\"btn btn-danger col-12 mb-3\"
+						</div>
+					</div>
+				</div>";
+			echo "</div>";
+			break;
+		case "Ristorante":
+			$email = $dati[0];
+			$password = $dati[1];
+			$nome = $dati[2];
+			$piva = $dati[3];
+			$rsociale = $dati[4];
+			$citta = $dati[5];
+			$via = $dati[6];
+			//$img = $dati[7];
+			//echo $via;
+			//echo $tipo;
+			//echo "<h1 class=\"bg-light\">". $email. $password. $nome. "</h1>";
+//PRENDERE IMG DEL PROFILO
+			echo "<div class=\"section mx-auto border\" style=\"max-width: 540px;\"";
+			echo "<div class=\"card\">
+					<img src=\"images/profile.png\" class=\"card-img-top\">
+					<div id =\"profilo\" class=\"card-body\">
+						<h5 class=\"card-title text-center\">". $nome. "</h5>
+						<p class=\"card-text text-center\"> ". $via. " ". $citta. "</p>
+						<p class=\"card-text text-center\"><small class=\"text-muted\">Password: ". $password . " </small></p>
+						<p class=\"card-text text-center\"><small class=\"text-muted\">Partita Iva: ". $piva. " </small></p>
+						<p class=\"card-text text-center\"><small class=\"text-muted\">Ragione Sociale: ". $rsociale. " </small></p>
+						<p class=\"card-text text-center\"><small id=\"tipo\" class=\"text-muted\">$tipo</small></p>
+						<div class=\"row\">
+						<input type=\"submit\" value=\"Modifica\" class=\"btn btn-primary col-12 mb-3\" onclick=loadModificaDati()>
+						<input type=\"submit\" value=\"Cancella\" class=\"btn btn-danger col-12 mb-3\"
+						</div>
+					</div>
+				</div>";
+			echo "</div>";
+			break;
+	}
 }
 
 function MostraDati($cid, $tipo) {
-    echo "<div>";
-        $risultato = leggiDati($cid);
-        $dati = $risultato["contenuto"];
-        //print_r($dati);
-        stampaDati($dati, $tipo);
-    echo "</div>";
-	return $risultato;
+	switch ($tipo) {
+		case "Cliente":
+			echo "<div>";
+				$risultato = leggiDati($cid,$tipo);
+				$dati = $risultato["contenuto"];
+				//print_r($dati);
+				stampaDati($dati, $tipo);
+			echo "</div>";
+				return $risultato;
+				break;
+		case "Fattorino":
+			echo "<div>";
+				$risultato = leggiFattorino($cid);
+				$dati = $risultato["contenuto"];
+				//print_r($dati);
+				stampaDati($dati, $tipo);
+			echo "</div>";
+				return $risultato;
+				break;
+		case "Ristorante":
+			echo "<div>";
+				$risultato = leggiRistorante($cid);
+				$dati = $risultato["contenuto"];
+				//print_r($dati);
+				stampaDati($dati, $tipo);
+		echo "</div>";
+			return $risultato;	
+			break;
+	}
 }
 
+/*Modifica dati cliente*/
 function ModificaCliente($cid, $login, $password, $nome, $cognome, $carta_credito, $indicazioni_consegna) 
 {	
 	$risultato = array("status"=>"ok","msg"=>"", "contenuto"=>"");
@@ -459,19 +584,19 @@ function ModificaCliente($cid, $login, $password, $nome, $cognome, $carta_credit
 	}*/
 	echo "<h1>Modifica Cliente</h1>";
 	$sql = "UPDATE `cliente` SET `email` = '$login', `password` = '$password', `nome` = '$nome', `cognome` = '$cognome', `carta_di_credito` = '$carta_credito', `indicazioni_consegna` = '$indicazioni_consegna' WHERE `cliente`.`email` = '$login';";
-	print $sql;
+	//print $sql;
 	$res=$cid->query($sql);
 	echo "<h1>Qua</h1>". $res;
 	if ($res==1) {
 		echo "Primo If";
-		$risultato["msg"]="L'operazione di inserimento si è conclusa con successo";
+		$risultato["msg"]="L'operazione di modifica si è conclusa con successo";
 		$risultato["status"]="ok";
 		return $risultato;
 	} else
 	{
 		echo "Secondo If";
 	   $risultato["status"]="ko";
-	   $risultato["msg"]="L'operazione di inserimento è fallita";
+	   $risultato["msg"]="L'operazione di modifica è fallita";
 	   return $risultato;
 	}
 	echo "No If";
@@ -484,80 +609,119 @@ function ModificaCliente($cid, $login, $password, $nome, $cognome, $carta_credit
 /*leggi FATTORINI*/
 function leggiFattorino($cid)
 {
- $fattorini = array();
- $risultato = array("status"=>"ok","msg"=>"", "contenuto"=>"");
- 
- /*controllo la connessione*/
- if ($cid->connect_errno) {
-  $risultato["status"]="ko";
-  $risultato["msg"]="errore nella connessione al db " . $cid->connect_error;
-  return $risultato;
- }
- /*creo la mia interrogazione*/
- $sql= "SELECT * FROM fattorino;";
- $res=$cid->query($sql);
- if ($res==null)
- {
-  $risultato["status"]="ko";
-  $risultato["msg"]="errore nella esecuzione della interrogazione " . $cid->error;
-  return $risultato;
- }
- while($row=$res->fetch_row())
- {
-	array_push($fattorini, $row);	
- }
- $risultato["status"]="ok";
- $risultato["msg"]="Query Effettuata con Successo";
- $risultato["contenuto"]=$fattorini;
- return $risultato;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-?>
-
-<?php 
-/*
-function svuotaFile($cid, $nometabella)
-{
-    $risultato= array("msg"=>"","status"=>"ok");
-	$msg="";
-
-	if ($cid->connect_errno) {
-		$risultato["status"]="ko";
-		$risultato["msg"]="errore nella connessione al db " . $cid->connect_error;
-		return $risultato;
-	}
+	$dati = array();
+	$risultato = array("status"=>"ok","msg"=>"", "contenuto"=>"");
 	
-	$sql = "DELETE FROM " . $nometabella . ";";	
-
-    $res = $cid->query($sql);
-
-		// gestione dell'errore
-	if ($res==null) 
-	{
-	        $msg = "Si sono verificati i seguenti errori:<br/>" 
-     		. $res->error;
-			$risultato["status"]="ko";
-			$risultato["msg"]=$msg;
+	/*controllo la connessione*/
+	if ($cid->connect_errno) {
+	 $risultato["status"]="ko";
+	 $risultato["msg"]="errore nella connessione al db " . $cid->connect_error;
+	 return $risultato;
 	}
+	/*creo la mia interrogazione*/
+	$campo1 = $_SESSION["utente"];
+	$sql= "SELECT * FROM fattorino WHERE email='$campo1';";
+	$res=$cid->query($sql);
+	if ($res==null)
+	{
+	 $risultato["status"]="ko";
+	 $risultato["msg"]="errore nella esecuzione della interrogazione " . $cid->error;
+	 return $risultato;
+	}
+	$row=$res->fetch_row();
+	//print_r($row);
+	for ($i=0; $i<sizeof($row); $i++) {
+	    $dati[$i]=$row[$i];
+	}
+	//print_r($dati);
+	$risultato["status"]="ok";
+	$risultato["msg"]="Query Effettuata con Successo";
+	$risultato["contenuto"]=$dati;
+	//print_r($risultato);
+	return $risultato;
+    }
+
+/*Modifica dati fattorino*/
+function ModificaFattorino($cid, $login, $password, $nome, $cognome, $cf, $accredito, $zona, $data)
+{	
+	$risultato = array("status"=>"ok","msg"=>"", "contenuto"=>"");
+	
+	$msg="";
+	$res=leggiFattorino($cid);
+	
+	if ($res["status"]=='ko')
+	{	
+		echo "<h1>Errore nella lettura dei fattorini</h1>";
+		$msg .= "Problemi nella lettura dal database<br/>";
+	}
+
+	echo "<h1>Modifica Fattorino</h1>";
+	$sql = "UPDATE `fattorino` SET `email` = '$login', `password` = '$password', `nome` = '$nome', `cognome` = '$cognome', `cf` = '$cf', `accredito` = '$accredito', `zona_citta`='$zona' ,`data_nascita`= '$data' WHERE `fattorino`.`email` = '$login';";
+	//print $sql;
+	$res=$cid->query($sql);
+	echo "<h1>Qua</h1>". $res;
+	if ($res==1) {
+		echo "Primo If";
+		$risultato["msg"]="L'operazione di modifica si è conclusa con successo";
+		$risultato["status"]="ok";
+		return $risultato;
+	} else
+	{
+		echo "Secondo If";
+	   $risultato["status"]="ko";
+	   $risultato["msg"]="L'operazione di modifica è fallita";
+	   return $risultato;
+	}
+	echo "No If";
+	$risultato["status"]="ko";
+	$risultato["msg"]=$msg;
 	return $risultato;
 }
-*/
-?>
+
+/*Modifica dati ristorante*/
+function ModificaRistorante($cid, $login, $password, $nome, $piva, $rsociale, $citta, $via, $img) 
+{	
+	$risultato = array("status"=>"ok","msg"=>"", "contenuto"=>"");
+	
+	$msg="";
+	$res=leggiRistorante($cid);
+	
+	if ($res["status"]=='ko')
+	{	
+		echo "<h1>Errore nella lettura dei Ristoranti</h1>";
+		$msg .= "Problemi nella lettura dal database<br/>";
+	}
+	/*$sqlindirizzo = "INSERT INTO indirizzo VALUES('$citta', '$via', '$cap', '$zona', '0');";
+	$res_ind = $cid->query($sqlindirizzo);
+	if ($res_ind==1) {
+		echo "ind:Primo If";
+		$risultato["msg"]="L'operazione di inserimento si è conclusa con successo";
+		$risultato["status"]="ok";
+	} else
+	{
+		echo "ind:Secondo If";
+	   $risultato["status"]="ko";
+	   $risultato["msg"]="L'operazione di inserimento è fallita";
+	}*/
+	echo "<h1>Modifica Ristorante</h1>";
+	$sql = "UPDATE `ristorante` SET `email` = '$login', `password` = '$password', `nome` = '$nome', `partita_iva` = '$piva', `ragione_sociale` = '$rsociale', `citta` = '$citta', `via`='$via' ,`img`= '$img' WHERE `ristorante`.`email` = '$login';";
+	print $sql;
+	$res=$cid->query($sql);
+	echo "<h1>Qua</h1>". $res;
+	if ($res==1) {
+		echo "Primo If";
+		$risultato["msg"]="L'operazione di modifica si è conclusa con successo";
+		$risultato["status"]="ok";
+		return $risultato;
+	} else
+	{
+		echo "Secondo If";
+	   $risultato["status"]="ko";
+	   $risultato["msg"]="L'operazione di modifica è fallita";
+	   return $risultato;
+	}
+	echo "No If";
+	$risultato["status"]="ko";
+	$risultato["msg"]=$msg;
+	return $risultato;
+}
