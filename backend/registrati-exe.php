@@ -1,5 +1,4 @@
 <?php
-session_start()
 $tipo = $_POST["tipo"];
 $login= $_POST["email"];
 $pwd = $_POST["password"];
@@ -39,7 +38,7 @@ if ($cid && !isset($_SESSION["logged"])) {
 			$accredito = 0;
 			$data = $_POST["data"];
 			$zona = $_POST["zonacitta"];
-			$risultato = insertFattorino($cid, $login, $pwd, $nome, $cognome, $cf, $accredito, $data, $zona);
+			$risultato = insertFattorino($cid, $login, $pwd, $nome, $cognome, $cf, $accredito, $zona, $data,);
 			echo "<h1>Fatto</h1>"; 
 			break;
 		case "Ristorante":

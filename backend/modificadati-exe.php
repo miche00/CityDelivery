@@ -29,10 +29,9 @@ if ($cid && isset($_SESSION["logged"])) {
 			$cognome = $_POST["cognome"];
 			$cf = $_POST["cf"];
 			$accredito = 0;
-			$data = $_POST["data"];
-			$zona = $_POST["zonacitta"];
-			//mancante
-			$risultato = ModificaFattorino($cid, $login, $password, $nome, $cognome, $cf, $accredito, $data, $zona);
+			$zona = $_POST["zona_citta"];
+			$data = $_POST["data_nascita"];
+			$risultato = ModificaFattorino($cid, $login, $password, $nome, $cognome, $cf, $accredito, $zona, $data);
 			echo "<h1>Fatto</h1>"; 
 			break;
 		case "Ristorante":
@@ -45,7 +44,7 @@ if ($cid && isset($_SESSION["logged"])) {
 			$img = "risto3.jpg"; //Da aggiungere nella form di registrazione
 			$nome = "Pippo"; //Da aggiungere nella form di registrazione
 			//mancante
-			$risultato = ModificaRistorante($cid, $login, $password, $piva, $rsociale, $citta, $via, $img, $nome);
+			$risultato = ModificaRistorante($cid, $login, $password, $nome, $piva, $rsociale, $citta, $via, $img);
 			echo "<h1>Fatto</h1>"; 
 			break;
 	}
