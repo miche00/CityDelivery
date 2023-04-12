@@ -1,0 +1,5 @@
+Modifica della documentazione: 
+- manca la sostituzione di ora_invio con ora_creazione
+- l'aggiunta dell'attributo ora_invio (NULL) ad Ordine
+- Tutti gli attributi tranne ora_crezione, data ed EmailC nella
+  tabelle Oridne sono stati messi a NULL.

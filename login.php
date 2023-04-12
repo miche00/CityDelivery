@@ -48,8 +48,15 @@
       	if (isset($_GET["status"])) {
 		      if($_GET["status"]=='ok') {
 			      echo "<div class=\"alert alert-success\" data-aos=\"fade-up\"><strong>" . urldecode($_GET["msg"]) . "</strong></div>";
+          } else {
+            echo "<div class=\"alert alert-danger\" data-aos=\"fade-up\"><strong>" . urldecode($_GET["msg"]) . "</strong></div>";            
           }
-        }
+        } 
+        if (isset($_GET["msg"])) {
+          if ($_GET["msg"] == "orderrequest") {
+            echo "<div class=\"alert alert-danger\" data-aos=\"fade-up\"><strong>" . "Per ordinare devi essere loggato come Cliente!" . "</strong></div>";
+          } 
+        } 
 	?> 
           <div class="col-lg-12" data-aos="fade-up" data-aos-delay="200">
 				    <form method="POST" action="backend/login-exe.php">

@@ -6,14 +6,15 @@
 
     </head>
     <body>
-        <!--
-        <h1>Esempio uso AJAX</h1>
-        <div id="demo">
-            Permetti ad AJAX di cambiare il testo.
-            <button type="button" onclick="loadDoc()">Cambia Contenuto</button>
-        </div>
-        -->
         <h1>Not yet</h1>
+        <?php 
+        session_start();
+        if (!isset($_SESSION["logged"])) {
+            echo "not logged";    
+        } elseif (isset($_SESSION["logged"])) {
+            echo "logged";
+        }
+        ?>  
     </body>
 </html>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

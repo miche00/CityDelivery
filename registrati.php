@@ -132,7 +132,6 @@
                   </div>
                 </div>
               </div>
-<?php /*
               <div class="col-lg-12">
                 <div class="row">
                   <div class="col-6">
@@ -155,8 +154,7 @@
                   </div>
                 </div>
               </div>
-*/?>
-            <input type="submit" value="Registrati" class="btn btn-primary col-12 mb-3"
+            <input type="submit" value="Registrati" class="btn btn-primary col-12 mb-3">
             </div>
           </div>
         </form>
