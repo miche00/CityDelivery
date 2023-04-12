@@ -13,10 +13,10 @@ $tipo = $_SESSION["tipo"];
 <div class="section" style="height:100px">
 </div>
 <?php
-    //print_r($_SESSION);
-    //echo $tipo;
-    $risultato = MostraDati($cid, $tipo);
-    //print_r($risultato);
+
+if (isset($_SESSION["logged"]))
+{	   	
+
         if (isset($_GET["status"])) {
             if ($_GET["status"]=="ok") {
                 echo "<div class=\"alert alert-success\"><strong>" . urldecode($_GET["msg"]) . "</strong></div>";
@@ -24,6 +24,14 @@ $tipo = $_SESSION["tipo"];
                 echo "<div class=\"alert alert-danger\"><strong>Errore!</strong>" . urldecode($_GET["msg"]) . "</div>";
             }
         }
+
+    $risultato = MostraDati($cid, $tipo);
+
+    }
+    else
+    {
+        header("Location:../CityDelivery/index.php?status=ko&msg=". urlencode("Operazione riservata ad utenti registrati. Procedi con la login"));
+    }
 ?>
 </body>
 <?php include "common/footer.php"; ?>
