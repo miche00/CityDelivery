@@ -1,4 +1,4 @@
-function ajaxRequest()
+/*function ajaxRequest()
 {
     var request=false;
     try { request = new XMLHttpRequest()}catch(e1){
@@ -8,7 +8,7 @@ function ajaxRequest()
         }
     }
     return request
-}
+}*/
 
 function loadDoc() 
 {
@@ -33,12 +33,12 @@ function loadDoc()
 }
 
 function loadModificaDati() {
-    var tipo = document.getElementById("tipo").innerHTML
-    if (tipo == "Cliente") {
-        url="common/txt/daticliente.php" // codice al posto dell'url
-      } else if (tipo == "Fattorino") {
-        url="common/txt/datifattorino.txt"
-      } else {
-        url="common/txt/datiristorante.txt"
-      }
+  var tipo = document.getElementById("tipo").innerHTML
+  if (tipo == "Cliente") {
+    document.getElementById("profilo").innerHTML = "<h1>Ciao<h1>"
+  } else if (tipo == "Fattorino") {
+    document.getElementById("profilo").innerHTML = "<h1>Fattorino<h1>"
+  } else {
+    document.getElementById("profilo").innerHTML = "<h1>Ristorante<h1>"
+  }
 }

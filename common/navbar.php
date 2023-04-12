@@ -20,6 +20,7 @@
                   <li><a class="text-light" href="_ajax.php">- Sottofunz2</a></li>
                 </ul>
               </li>
+              <li><a class = "text-light" href="ordiniRisto.php">Ordini</a></li>
               <li><a class = "text-light" href="profilo.php">Profilo</a></li>
               <li><a class = "text-light" href="backend/logout-exe.php">Logout</a></li>
             <?php } else { ?>

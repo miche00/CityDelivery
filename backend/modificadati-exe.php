@@ -7,10 +7,10 @@ include_once("../common/setup.php");
 include_once("../common/funzioni.php");
 if ($cid && isset($_SESSION["logged"])) {
 	$utente = 0;
-	echo "<h1>Qui</h1>";
+	//echo "<h1>Qui</h1>";
 	switch ($tipo) {
 		case "Cliente":
-			echo "<h1>Cliente</h1>";  
+			//echo "<h1>Cliente</h1>";  
 			//email, password, nome, cognome, città, indicazioni, carta
 			$password = $_POST["password"];
 			$nome = $_POST["nome"];

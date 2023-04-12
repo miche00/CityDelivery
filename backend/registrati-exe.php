@@ -15,7 +15,7 @@ if ($cid && !isset($_SESSION["logged"])) {
 		header("Location:../login.php?status=ok&msg=". urlencode($result["msg"]));
 	}	else 	{
 	$utente = 0;
-	echo "<h1>Qui</h1>";
+	//echo "<h1>Qui</h1>";
 	switch ($tipo) {
 		case "Cliente":
 			echo "<h1>Cliente</h1>";  

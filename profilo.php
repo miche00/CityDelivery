@@ -13,6 +13,9 @@ $tipo = $_SESSION["tipo"];
 <div class="section" style="height:100px">
 </div>
 <?php
+
+if (isset($_SESSION["logged"]))
+{	   	
     //print_r($_SESSION);
     //echo $tipo;
     $risultato = MostraDati($cid, $tipo);
@@ -24,6 +27,11 @@ $tipo = $_SESSION["tipo"];
                 echo "<div class=\"alert alert-danger\"><strong>Errore!</strong>" . urldecode($_GET["msg"]) . "</div>";
             }
         }
+    }
+    else
+    {
+        header("Location:../CityDelivery/index.php?status=ko&msg=". urlencode("Operazione riservata ad utenti registrati. Procedi con la login"));
+    }
 ?>
 </body>
 <?php include "common/footer.php"; ?>
