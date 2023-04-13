@@ -13,17 +13,22 @@
       
             <?php if (isset($_SESSION["logged"])) {?>
               <li><a class = "text-light" href="ristoranti.php">Ristoranti</a></li>
-              <li class="has-children">
-                <a class = "text-light" href="_ajax.php">Funzionalità</a>
-                <ul class="dropdown">
-                  <li><a class="text-light" href="_ajax.php">- Sottofunz1</a></li>
-                  <li><a class="text-light" href="_ajax.php">- Sottofunz2</a></li>
-                </ul>
-              </li>
-              <li><a class = "text-light" href="ordiniRisto.php">Ordini</a></li>
+              <?php
+              //<li class="has-children">
+                //<a class = "text-light" href="_ajax.php">Funzionalità</a>
+                //<ul class="dropdown">
+                //  <li><a class="text-light" href="_ajax.php">- Sottofunz1</a></li>
+                //  <li><a class="text-light" href="_ajax.php">- Sottofunz2</a></li>
+              //  </ul>
+              //</li>
+              ?>
+              <li><a class = "text-light" href="ordini.php">Ordini</a></li>
               <li><a class = "text-light" href="profilo.php">Profilo</a></li>
               <li><a class = "text-light" href="backend/logout-exe.php">Logout</a></li>
-            <?php } else { ?>
+            <?php 
+            } else 
+            { 
+              ?>
               <li><a class = "text-light" href="ristoranti.php">Ristoranti</a></li>
               <li><a class = "text-light" href="registrati.php">Registrati</a></li>
               <li><a class = "text-light" href="login.php">Login</a></li>

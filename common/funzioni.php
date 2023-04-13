@@ -563,8 +563,7 @@ function insertFattorino($cid, $login, $pwd, $nome, $cognome, $cf, $accredito, $
 }
 
 /*legge i dati dell'utente*/
-function leggiDati($cid)
-{
+function leggiDati($cid) {
  $dati = array();
  $risultato = array("status"=>"ok","msg"=>"", "contenuto"=>"");
  
@@ -1082,7 +1081,7 @@ function ModificaRistorante($cid, $login, $password, $nome, $piva, $rsociale, $c
 
 
 /*Funzione per leggere gli ordini*/
-function leggiOrdini($cid, $risto)
+function leggiOrdini($cid, $email, $tipo)
 {
  $ordini = array();
  $risultato = array("status"=>"ok","msg"=>"", "contenuto"=>"");
@@ -1094,7 +1093,13 @@ function leggiOrdini($cid, $risto)
   return $risultato;
  }
  /*creo la mia interrogazione*/
- $sql= "SELECT * FROM ordine WHERE emailR = '$risto';"; //potrebbe esserci una AND tempo di invio... da controllare
+ if (($_SESSION["tipo"])=="Ristorante") {
+	$sql= "SELECT * FROM ordine WHERE emailR = '$email';"; //potrebbe esserci una AND tempo di invio... da controllare
+ } else if (($_SESSION["tipo"])=="Cliente") {
+	$sql= "SELECT * FROM ordine WHERE emailC = '$email';";
+ } else {
+	$sql= "SELECT * FROM ordine WHERE emailF = '$email';";
+ }
  $res=$cid->query($sql);
  if ($res==null)
  {
@@ -1113,37 +1118,121 @@ function leggiOrdini($cid, $risto)
 }
 
 /*Funzione per stampare gli ordini di un certo ristorante*/
-function stampaOrdini($ordini) {
+function stampaOrdini($cid, $ordini, $tipo) {
 	foreach ($ordini AS $key => $ar_ordini)
 	 {
 	  $ora_creazione = $ar_ordini[0];
 	  $data = $ar_ordini[1];
+	  $costo_totale = Calcolacosto($cid, $data, $ora_creazione);
+	  //echo $costo_totale;
 	  $tempo_consegna = $ar_ordini[3];
 	  $tipo_pagamento = $ar_ordini[4];
 	  $ora_accettazione = $ar_ordini[5];
 	  $stato_ordine =$ar_ordini[6];
-	  $costo_totale = $ar_ordini[7];
+	  //$costo_totale = $ar_ordini[7];
 	  $cliente = $ar_ordini[10];
 	  $risto = $ar_ordini[8];
 	  $fattorino=$ar_ordini[9];
    
-	  echo "
-	  <tr>
-				   <th scope=\"row\"></th> 
-				   <td>$cliente</td>
-				   <td>$data</td>
-	   <td>$ora_creazione</td>
+	  echo "<tr>";
+	  switch ($tipo) {
+		case "Cliente":
+			echo "<td>$tipo_pagamento</td>
+				  <td>$risto</td>
+				  <td>$data</td>
+	   				<td>$ora_creazione</td>
 				   <td>$tempo_consegna </td>
 				   <td>$ora_accettazione</td>
 				   <td>$stato_ordine</td>
 				   <td> &euro; $costo_totale</td>
-				   <td id=\"fattorino\">$fattorino</td>
-	   <td>
-		<a class=\"btn-sm btn-success\" href=\"frontend\modificaOrdineRisto.php?data=$data&ora=$ora_creazione&stato=$stato_ordine\">Modifica</a>
-	   <a class=\"btn-sm btn-danger\" href=\"backend\cancellaOrdine-exe.php?data=$data&ora=$ora_creazione\">Cancella</a>
-	   </td>
-				 </tr>
-	  ";   
+				   <td id=\"fattorino\">$fattorino</td>";
+				   if ($ora_accettazione  != "") {
+						//echo "c'è ora accettazione";
+						echo "<td><a  href=\"backend\modificaOrdine-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-secondary disabled\">Modifica</a></td>";
+						echo "<td><a  href=\"backend\cancellaOrdine-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-danger disabled\" >Cancella</a></td>";
+						echo "<td><a href=\"backend\confirm_order-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-primary disabled\">Conferma</a></td>";
+					} else {
+						//echo "NON c'è ora accettazione";
+						echo "<td><a href=\"backend\modificaOrdine-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-secondary\" >Modifica</a></td>";
+						echo "<td><a href=\"backend\cancellaOrdine-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-danger\" >Cancella</a></td>";
+						//echo "<td><a href=\"backend\confirm_order-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-primary\" >Conferma</a></td>";
+						echo "<td><button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#Modal\">Conferma</button></td>";
+					}
+			break;
+		case "Fattorino":
+			echo "<td>$tipo_pagamento</td>
+				  <td>$risto</td>
+				  <td>$data</td>
+	   				<td>$ora_creazione</td>
+				   <td>$tempo_consegna </td>
+				   <td>$ora_accettazione</td>
+				   <td>$stato_ordine</td>
+				   <td> &euro; $costo_totale</td>
+				   <td id=\"fattorino\">$fattorino</td>";
+				   echo "<td><a href=\"backend\modificaOrdine-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-secondary\" >Modifica</a></td>";
+				   echo "<td><a href=\"backend\cancellaOrdine-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-danger\" >Cancella</a></td>";
+				   //echo "<td><a href=\"backend\confirm_order-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-primary\" >Conferma</a></td>";
+				   echo "<td><button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#Modal\">Conferma</button></td>";
+			break;
+		case "Ristorante":
+			echo "<td>$cliente</td>
+				  <td>$data</td>
+	   				<td>$ora_creazione</td>
+				   <td>$tempo_consegna </td>
+				   <td>$ora_accettazione</td>
+				   <td>$stato_ordine</td>
+				   <td> &euro; $costo_totale</td>
+				   <td id=\"fattorino\">$fattorino</td>";
+				   echo "<td><a href=\"backend\modificaOrdine-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-secondary\" >Modifica</a></td>";
+				   echo "<td><a href=\"backend\cancellaOrdine-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-danger\" >Cancella</a></td>";
+				   //echo "<td><a href=\"backend\confirm_order-exe.php?data=$data&ora=$ora_creazione\" class=\"btn btn-lg btn-primary\" >Conferma</a></td>";
+				   echo "<td><button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#Modal\">Visualizza</button></td>";
+			break;
+	  }
+		/*if ($_SESSION["tipo"]=="Cliente") {
+			echo "<td>$tipo_pagamento</td>
+				  <td>$risto</td>
+				  <td>$data</td>
+	   				<td>$ora_creazione</td>
+				   <td>$tempo_consegna </td>
+				   <td>$ora_accettazione</td>
+				   <td>$stato_ordine</td>
+				   <td> &euro; $costo_totale</td>
+				   <td id=\"fattorino\">$fattorino</td>";
+		}*/
+	   echo "</tr>";
+	echo <<<STAMPA
+	   "<!-- Modal -->
+	   <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+		 <div class="modal-dialog" role="document">
+		   <div class="modal-content">
+			 <div class="modal-header">
+			   <h5 class="modal-title" id="ModalLabel">Checkout</h5>
+			   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				 <span aria-hidden="true">&times;</span>
+			   </button>
+			 </div>
+			 <div class="modal-body">
+				<form id="myform" method="get" action="backend/calcola_costo-exe.php">
+	   				<h6>Il costo totale è $costo_totale EUR</h6>
+					<label>Seleziona un tipo di pagamento:</label>
+					<select name="pagamento" id="cars">
+						<option value="Contanti">Contanti</option>
+						<option value="Carta">Carta di Credito</option>
+						<input type="hidden" name="data" value=$data />
+						<input type="hidden" name="ora_creazione" value="$ora_creazione" />
+					</select>
+				</form>
+			 </div>
+			 <div class="modal-footer">
+			   <button type="button" class="btn btn-secondary" data-dismiss="modal">Esci senza salvare</button>
+			   <button type="submit" form="myform" class="btn btn-primary">Salva</button>
+			 </div>
+		   </div>
+		 </div>
+	   </div>
+	</tr>"
+	STAMPA;   
 	} 
    }
 /*cancella profilo in base al tipo di utente */
@@ -1209,5 +1298,103 @@ function cancellaProfilo($cid, $login, $tipo)
    $risultato["msg"]=$msg;
  }
  return $risultato;
+}
+
+function ConfermaOrdine($cid, $timeacc, $timeord, $dataord) {
+	$sql1 = "UPDATE `ordine` SET `ora_accettazione` = '$timeacc' WHERE `ordine`.`ora_creazione` = '$timeord' AND `ordine`.`data` = '$dataord'";
+	print $sql1;
+	$res1=$cid->query($sql1);
+	if ($res1==1) {
+		echo "Primo If";
+		$risultato["msg1"]="L'operazione di modifica si è conclusa con successo";
+		$risultato["status1"]="ok";
+	} else
+	{
+		echo "Secondo If";
+	   $risultato["status1"]="ko";
+	   $risultato["msg1"]="L'operazione di modifica è fallita";
+	}
+	$sql2 = "UPDATE `ordine` SET `stato_ordine` = 'preso in carico' WHERE `ordine`.`ora_creazione` = '$timeord' AND `ordine`.`data` = '$dataord'";
+	print $sql2;
+	$res2=$cid->query($sql2);
+	if ($res2==1) {
+		echo "Primo If";
+		$risultato["msg"]="L'operazione di modifica si è conclusa con successo";
+		$risultato["status"]="ok";
+		return $risultato;
+	} else
+	{
+		echo "Secondo If";
+	   $risultato["status"]="ko";
+	   $risultato["msg"]="L'operazione di modifica è fallita";
+	   return $risultato;
+	}
+	echo "No If";
+	$risultato["status"]="ko";
+	$risultato["msg"]=$msg;
+	return $risultato;
+}
+
+function UpdatePagamento($cid, $pagamento, $timeord, $dataord) {
+	$sql1 = "UPDATE `ordine` SET `tipo_pagamento` = '$pagamento' WHERE `ordine`.`ora_creazione` = '$timeord' AND `ordine`.`data` = '$dataord'";
+	print $sql1;
+	$res1=$cid->query($sql1);
+	if ($res1==1) {
+		echo "Primo If";
+		$risultato["msg1"]="L'operazione di modifica si è conclusa con successo";
+		$risultato["status1"]="ok";
+	} else
+	{
+		echo "Secondo If";
+	   $risultato["status1"]="ko";
+	   $risultato["msg1"]="L'operazione di modifica è fallita";
+	}
+	return $risultato;
+}
+
+function Calcolacosto($cid, $dataord, $timeord) {
+	// Ottengo il prezzo di ogni piatto contenuto all'interno dell'Ordine
+	//echo "Parte 2";
+	$sql2 = "SELECT * from contiene NATURAL JOIN pietanza WHERE data = '$dataord' AND ora_creazione = '$timeord'";
+	//print $sql2;
+	$res2 = $cid->query($sql2);
+	if ($res2->num_rows > 0) {
+		//echo "Primo If";
+		$risultato["msg2"]="L'operazione di modifica si è conclusa con successo";
+		$risultato["status2"]="ok";
+	} else
+	{
+		//echo "Secondo If";
+	   $risultato["status2"]="ko";
+	   $risultato["msg2"]="L'operazione di modifica è fallita";
+	}
+	$costo = 0;
+	foreach ($res2 AS $key => $ar) {
+		$costopiatto = $ar["costo"];
+		$qta = $ar["qta"];
+		$costo += $costopiatto*$qta;
+	}
+	return $costo;
+
+	/*
+	// Faccio l'Update del costo totale sulla tupla di Ordine
+	$sql3 = "UPDATE `ordine` SET `costo_totale` = '$costo' WHERE `ordine`.`ora_creazione` = '$timeord' AND `ordine`.`data` = '$dataord'";
+	print $sql3;
+	$res3=$cid->query($sql3);
+	print_r($res3);
+	if ($res3==1) {
+		echo "Primo If";
+		$risultato["msg3"]="L'operazione di modifica si è conclusa con successo";
+		$risultato["status3"]="ok";
+		return $risultato;
+	} else
+	{
+		echo "Secondo If";
+	   $risultato["status3"]="ko";
+	   $risultato["msg3"]="L'operazione di modifica è fallita";
+	   return $risultato;
+	}
+	return $risultato;
+	*/
 }
 ?>
