@@ -6,7 +6,7 @@
 
     </head>
     <body>
-        <h1>Not yet</h1>
+    <button  type="button" href="backend\confirm_order-exe.php" class="btn btn-lg btn-secondary" >Conferma</button>
         <?php 
         session_start();
         if (!isset($_SESSION["logged"])) {

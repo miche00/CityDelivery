@@ -44,10 +44,15 @@
                   </div>
                 </div>
               </div>
-            </div>
-
-
-            <div class=\"section bg-light\">
+            </div>";
+            if (isset($_GET["status"])) {
+              if($_GET["status"]=='ok') {
+                echo "<div class=\"alert alert-success\" data-aos=\"fade-up\"><strong>Ordine Aggiunto</strong></div>";
+              } else {
+                echo "<div class=\"alert alert-danger\" data-aos=\"fade-up\"><strong>\"C'è stato un errore nell'aggiunta dell'Ordine\"</strong></div>";            
+              }
+            } 
+            echo "<div class=\"section bg-light\">
               <div class=\"container\">
                 <div class=\"row align-items-left\" data-aos=\"fade-up\">
                   <div class=\"section\">

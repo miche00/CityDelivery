@@ -3,3 +3,7 @@ Modifica della documentazione:
 - l'aggiunta dell'attributo ora_invio (NULL) ad Ordine
 - Tutti gli attributi tranne ora_crezione, data ed EmailC nella
   tabelle Oridne sono stati messi a NULL.
+
+
+  13/04 00:58
+  - Database non mi lascia cancellare l'ora accettazione di un ordine non lasciandomi fare la prova definitiva del funzionamento della conferma.
